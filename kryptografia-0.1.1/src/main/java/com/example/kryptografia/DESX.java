@@ -54,40 +54,102 @@ public class DESX {
             28, 29, 28, 29, 30, 31, 32,  1
     };
 
-    private byte[] SBoxes = {
-            14,  4, 13,  1,  2, 15, 11,  8,  3, 10,  6, 12,  5,  9,  0,  7, // S1
+    private byte[] S1 = {
+            14,  4, 13,  1,  2, 15, 11,  8,  3, 10,  6, 12,  5,  9,  0,  7,
              0, 15,  7,  4, 14,  2, 13,  1, 10,  6, 12, 11,  9,  5,  3,  8,
              4,  1, 14,  8, 13,  6,  2, 11, 15, 12,  9,  7,  3, 10,  5,  0,
-            15, 12,  8,  2,  4,  9,  1,  7,  5, 11,  3, 14, 10,  0,  6, 13,
-            15,  1,  8, 14,  6, 11,  3,  4,  9,  7,  2, 13, 12,  0,  5, 10, // S2
+            15, 12,  8,  2,  4,  9,  1,  7,  5, 11,  3, 14, 10,  0,  6, 13
+    };
+    private byte[] S2 = {
+            15,  1,  8, 14,  6, 11,  3,  4,  9,  7,  2, 13, 12,  0,  5, 10,
              3, 13,  4,  7, 15,  2,  8, 14, 12,  0,  1, 10,  6,  9, 11,  5,
              0, 14,  7, 11, 10,  4, 13,  1,  5,  8, 12,  6,  9,  3,  2, 15,
-            13,  8, 10,  1,  3, 15,  4,  2, 11,  6,  7, 12,  0,  5, 14,  9,
-            10,  0,  9, 14,  6,  3, 15,  5,  1, 13, 12,  7, 11,  4,  2,  8, // S3
+            13,  8, 10,  1,  3, 15,  4,  2, 11,  6,  7, 12,  0,  5, 14,  9
+    };
+    private byte[] S3 = {
+            10,  0,  9, 14,  6,  3, 15,  5,  1, 13, 12,  7, 11,  4,  2,  8,
             13,  7,  0,  9,  3,  4,  6, 10,  2,  8,  5, 14, 12, 11, 15,  1,
             13,  6,  4,  9,  8, 15,  3,  0, 11,  1,  2, 12,  5, 10, 14,  7,
-             1, 10, 13,  0,  6,  9,  8,  7,  4, 15, 14,  3, 11,  5,  2, 12,
-             7, 13, 14,  3,  0,  6,  9, 10,  1,  2,  8,  5, 11, 12,  4, 15, // S4
+             1, 10, 13,  0,  6,  9,  8,  7,  4, 15, 14,  3, 11,  5,  2, 12
+    };
+    private byte[] S4 = {
+             7, 13, 14,  3,  0,  6,  9, 10,  1,  2,  8,  5, 11, 12,  4, 15,
             13,  8, 11,  5,  6, 15,  0,  3,  4,  7,  2, 12,  1, 10, 14,  9,
             10,  6,  9,  0, 12, 11,  7, 13, 15,  1,  3, 14,  5,  2,  8,  4,
-             3, 15,  0,  6, 10,  1, 13,  8,  9,  4,  5, 11, 12,  7,  2, 14,
-             2, 12,  4,  1,  7, 10, 11,  6,  8,  5,  3, 15, 13,  0, 14,  9, // S5
+             3, 15,  0,  6, 10,  1, 13,  8,  9,  4,  5, 11, 12,  7,  2, 14
+    };
+    private byte[] S5 = {
+             2, 12,  4,  1,  7, 10, 11,  6,  8,  5,  3, 15, 13,  0, 14,  9,
             14, 11,  2, 12,  4,  7, 13,  1,  5,  0, 15, 10,  3,  9,  8,  6,
              4,  2,  1, 11, 10, 13,  7,  8, 15,  9, 12,  5,  6,  3,  0, 14,
-            11,  8, 12,  7,  1, 14,  2, 13,  6, 15,  0,  9, 10,  4,  5,  3,
-            12,  1, 10, 15,  9,  2,  6,  8,  0, 13,  3,  4, 14,  7,  5, 11, // S6
+            11,  8, 12,  7,  1, 14,  2, 13,  6, 15,  0,  9, 10,  4,  5,  3
+    };
+    private byte[] S6 = {
+            12,  1, 10, 15,  9,  2,  6,  8,  0, 13,  3,  4, 14,  7,  5, 11,
             10, 15,  4,  2,  7, 12,  9,  5,  6,  1, 13, 14,  0, 11,  3,  8,
              9, 14, 15,  5,  2,  8, 12,  3,  7,  0,  4, 10,  1, 13, 11,  6,
-             4,  3,  2, 12,  9,  5, 15, 10, 11, 14,  1,  7,  6,  0,  8, 13,
-             4, 11,  2, 14, 15,  0,  8, 13,  3, 12,  9,  7,  5, 10,  6,  1, // S7
+             4,  3,  2, 12,  9,  5, 15, 10, 11, 14,  1,  7,  6,  0,  8, 13
+    };
+    private byte[] S7 = {
+             4, 11,  2, 14, 15,  0,  8, 13,  3, 12,  9,  7,  5, 10,  6,  1,
             13,  0, 11,  7,  4,  9,  1, 10, 14,  3,  5, 12,  2, 15,  8,  6,
              1,  4, 11, 13, 12,  3,  7, 14, 10, 15,  6,  8,  0,  5,  9,  2,
-             6, 11, 13,  8,  1,  4, 10,  7,  9,  5,  0, 15, 14,  2,  3, 12,
-            13,  2,  8,  4,  6, 15, 11,  1, 10,  9,  3, 14,  5,  0, 12,  7, // S8
+             6, 11, 13,  8,  1,  4, 10,  7,  9,  5,  0, 15, 14,  2,  3, 12
+    };
+    private byte[] S8 = {
+            13,  2,  8,  4,  6, 15, 11,  1, 10,  9,  3, 14,  5,  0, 12,  7,
              1, 15, 13,  8, 10,  3,  7,  4, 12,  5,  6, 11,  0, 14,  9,  2,
              7, 11,  4,  1,  9, 12, 14,  2,  0,  6, 10, 13, 15,  3,  5,  8,
              2,  1, 14,  7,  4, 10,  8, 13, 15, 12,  9,  0,  3,  5,  6, 11
     };
+    private byte[] permutationP = {
+            16,  7, 20, 21, 29, 12, 28, 17,
+             1, 15, 23, 26,  5, 18, 31, 10,
+             2,  8, 24, 14, 32, 27,  3,  9,
+            19, 13, 30,  6, 22, 11,  4, 25
+    };
+
+    private byte[] endPermutation = {
+            40,  8, 48, 16, 56, 24, 64, 32,
+            39,  7, 47, 15, 55, 23, 63, 31,
+            38,  6, 46, 14, 54, 22, 62, 30,
+            37,  5, 45, 13, 53, 21, 61, 29,
+            36,  4, 44,  2, 52, 20, 60, 28,
+            35,  3, 43, 11, 51, 19, 59, 27,
+            34,  2, 42, 10, 50, 18, 58, 26,
+            33,  1, 41,  9, 49, 17, 57, 25
+    };
+
+    private byte[] keyInternal;
+
+    private byte[] keyExternal;
+
+    private byte[] keyDes;
+
+    public void setKeyInternal(byte[] keyInt) {
+        this.keyInternal = keyInt;
+    }
+
+    public void setKeyExternal(byte[] keyExt) {
+        this.keyExternal = keyExt;
+    }
+
+    public void setKeyDes(byte[] keyDes) {
+        this.keyDes = keyDes;
+        generate16Keys(keyDes);
+    }
+
+    public byte[] getKeyInternal() {
+        return keyInternal;
+    }
+
+    public byte[] getKeyExternal() {
+        return keyExternal;
+    }
+
+    public byte[] getKeyDes() {
+        return keyDes;
+    }
 
     public boolean isBitSet (byte[] bytes, int position) {  //sprawdza czy bit na danej pozycji wynosi 0 czy 1
         byte auxByte = bytes[position / 8]; //np. dla position=50 auxByte=50:8=6, czyli poszukiwany bit jest w bajcie nr 6(czyli siodmym)
@@ -164,23 +226,6 @@ public class DESX {
         return shifted;
     }
 
-    /*public byte[] circularLeftShift(byte[] data, int dataLen) {
-        byte[] res = new byte[data.length];
-        byte step = (byte) (data.length * 8 - dataLen);
-
-        System.arraycopy(data, 0, res, 0, data.length);
-
-        for (int i = 0; i < data.length; i++) {
-            res[i] = (byte) (res[i] << 1);
-            if (i + 1 < data.length) {
-                res = setBit(res, 8 * i + 7, isBitSet(data, 8 * i + 8));
-            } else {
-                res = setBit(res, 8 * i + 7 - step, isBitSet(data, 0));
-            }
-        }
-        return res;
-    }*/
-
     public byte[] inititalPermutation(byte[] _8Bytes) {
         byte[] local = new byte[8];
         for (int i = 0; i < 64; i++) {
@@ -249,26 +294,10 @@ public class DESX {
                 key56 = setBit(key56, j, isBitSet(key28Left, j));
                 key56 = setBit(key56, j + 28, isBitSet(key28Right, j));
             }
-            /*
-            for (int j = 0; j < 6; j++) {
-                for (int k = 0; k < 8; k ++) {
-                    System.out.println(String.valueOf(i) + " " + String.valueOf(j) + " " + String.valueOf(k) + " ");
-                    int index = PC2[k * 8 + j] - 1;
-                    boolean bitToSet;
-                    if(index < 24) {
-                        bitToSet = isBitSet(key28Left, index);
-                    } else {
-                        bitToSet = isBitSet(key28Right, index);
-                    }
-                    key48 = setBit(key48,j * 8 + k , bitToSet);
-                }
-            }*/
             for (int j = 0; j < 48; j++) { //przerobienie klucza 56bitowego na klucz 48bitowy analogicznie jak wczesniej sie zmienialo
                 //klucz 64bitowy na 56bitowy, ale tu musimy wykorzystac tablice PC2, zamiast PC1
                 subKeys[i]= setBit(subKeys[i], j, isBitSet(key56, PC2[j] - 1));
             }
-            //System.out.println("CD" + String.valueOf(i + 1) + ":");
-            //printBits(subKeys[i]);
         }
     }
 
@@ -289,34 +318,241 @@ public class DESX {
         return xored;
     }
 
-    public byte[] FeistelFunction(byte[] message32, byte[] key) {
+    public byte[] FeistelFunction(byte[] message32, byte[] key) { //funkcja Feistel specyficzna funkcja wymagana przy szyfrowaniu
         byte[] feistel = new byte[6];
-        for (int i = 0; i < 6; i ++) {
+        for (int i = 0; i < 6; i ++) {  //przepisujemy bity z wiadomosci zgodnie z kolejnoscia w EBitSelectionTable(bo wymaga tego algorytm)
+            // rozszerzajac ja do 48bitow, by pasowala wielkoscia do klucza.
             for (int j = 0; j < 8; j++) {
                 feistel = setBit(feistel, i * 8 + j, isBitSet(message32, EBitSelectionTable[i * 8 + j] - 1));
             }
         }
-        //printBits(feistel);
-        //byte[] xored = new byte[6];
         byte[] xored = XOR(feistel, key);
-        for (int i = 0; i < 6; i++) {
+        for (int i = 0; i < 6; i++) { //wykonujemy operacje xor miedzy wiadomoscia po przestawieniu bitow i kluczem(1 z 16)
             for (int j = 0; j < 8; j++) {
                 feistel = setBit(feistel, i * 8 + j, isBitSet(xored, i * 8 + j));
             }
         }
-        printBits(feistel);
-        //to be continued sboxes
-        return feistel;
+
+        byte[] beforePermutation = new byte [4]; //zmiena beforePermutation zbierze nam wyniki przekszalcenia 6bitowych czesci wiadomosci sboxami spowrotem w calosc
+        for (int i = 0; i < 8; i ++) {  //Szyfrujemy wiadomosc stosujac SBoxy. Dzielimy wiadomosc na 6 bitowe czesci.
+            int row = 0;
+            int column = 0;
+            byte afterbox;
+            for (int j = 0; j < 6; j++) {   //W kazdej czesci pierwszy i szosty bit okreslaja wiersz, a bity drugi, trzeci, czwarty, piaty kolumne.
+                //np. dla 101010 wskazuje na wiersz 10(traktuj binarnie), czyli na wiersz trzeci i kolumne 0101(traktuj binarnie) szosta.
+                switch (j) {
+                    case 0:
+                        if (isBitSet(feistel, i * 6 + j)) {
+                            row = row + 2;
+                        }
+                        break;
+                    case 1:
+                        if (isBitSet(feistel, i * 6 + j)) {
+                            column = column + 8;
+                        }
+                        break;
+                    case 2:
+                        if (isBitSet(feistel, i * 6 + j)) {
+                            column = column + 4;
+                        }
+                        break;
+                    case 3:
+                        if (isBitSet(feistel, i * 6 + j)) {
+                            column = column + 2;
+                        }
+                        break;
+                    case 4:
+                        if (isBitSet(feistel, i * 6 + j)) {
+                            column = column + 1;
+                        }
+                        break;
+                    case 5:
+                        if (isBitSet(feistel, i * 6 + j)) {
+                            row = row + 1;
+                        }
+                        byte[] aux = new byte[1];
+                        switch (i) {    //Znajac wiersz i kolumne mozemy okreslic ktory nr bitu w sboxie nas interesuje.
+                            //Wyszukujemy w odpowiednim sboxie(dla pierwszej 6bitowej czesci pierwszy sbox itd.) liczbe, ktora jest
+                            // w danym wierszu i danej kolumnie. W zaleznosci od tresci wiadomosci sboxy beda zwracaly nam inne liczby.
+                            case 0:
+                                afterbox = S1[row * 16 + column];
+                                aux[0] = afterbox;
+                                for (int k = 0; k < 4; k++) {
+                                    beforePermutation = setBit(beforePermutation, k, isBitSet(aux, k + 4));
+                                }
+                                break;
+                            case 1:
+                                afterbox = S2[row * 16 + column];
+                                aux[0] = afterbox;
+                                for (int k = 0; k < 4; k++) {
+                                    beforePermutation = setBit(beforePermutation, k + 4, isBitSet(aux, k + 4));
+                                }
+                                break;
+                            case 2:
+                                afterbox = S3[row * 16 + column];
+                                aux[0] = afterbox;
+                                for (int k = 0; k < 4; k++) {
+                                    beforePermutation = setBit(beforePermutation, k + 8, isBitSet(aux, k + 4));
+                                }
+                                break;
+                            case 3:
+                                afterbox = S4[row * 16 + column];
+                                aux[0] = afterbox;
+                                for (int k = 0; k < 4; k++) {
+                                    beforePermutation = setBit(beforePermutation, k + 12, isBitSet(aux, k + 4));
+                                }
+                                break;
+                            case 4:
+                                afterbox = S5[row * 16 + column];
+                                aux[0] = afterbox;
+                                for (int k = 0; k < 4; k++) {
+                                    beforePermutation = setBit(beforePermutation, k + 16, isBitSet(aux, k + 4));
+                                }
+                                break;
+                            case 5:
+                                afterbox = S6[row * 16 + column];
+                                aux[0] = afterbox;
+                                for (int k = 0; k < 4; k++) {
+                                    beforePermutation = setBit(beforePermutation, k + 20, isBitSet(aux, k + 4));
+                                }
+                                break;
+                            case 6:
+                                afterbox = S7[row * 16 + column];
+                                aux[0] = afterbox;
+                                for (int k = 0; k < 4; k++) {
+                                    beforePermutation = setBit(beforePermutation, k + 24, isBitSet(aux, k + 4));
+                                }
+                                break;
+                            case 7:
+                                afterbox = S8[row * 16 + column];
+                                aux[0] = afterbox;
+                                for (int k = 0; k < 4; k++) {
+                                    beforePermutation = setBit(beforePermutation, k + 28, isBitSet(aux, k + 4));
+                                }
+                                break;
+                        }
+                        break;
+                }
+            }
+        }
+        byte[] output = new byte[4];
+        for (int i = 0; i < 4; i ++) {  // Dokonujemy permutacji P.
+            for (int j = 0; j < 8; j++) {
+                output = setBit(output, i * 8 + j, isBitSet(beforePermutation, permutationP[i * 8 + j] - 1));
+            }
+        }
+        return output;
     }
 
-    public byte[] encoding(byte[] partialMessage) { //zakodowanie wiadomosci poczatkowej
-        byte [] ip = new byte[8];
+    public byte[] encryption(byte[] partialMessage) { //zakodowanie wiadomosci poczatkowej
+        byte [] ip = new byte[8];   //stosujemy na wiadomosci permutacje poczatkowa
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
                 ip = setBit(ip, i * 8 + j, isBitSet(partialMessage, initPermutation[i * 8 + j] - 1));
             }
         }
-        printBits(ip);
+
+        byte [] ipLeft = new byte[4];
+
+        for (int i = 0; i < 4; i++) { //dzielimy spermutowana wiadomosc na 2 czesci-L0 i P0(L zero i P zero
+            for (int j = 0; j < 8; j++) {
+                ipLeft = setBit(ipLeft, i * 8 + j, isBitSet(ip, i * 8 + j));
+            }
+        }
+
+        byte [] ipRight = new byte[4];
+        for (int i = 4; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                ipRight = setBit(ipRight, i * 8 + j - 32, isBitSet(ip, i * 8 + j));
+            }
+        }
+
+        byte[] ipAux = new byte[4]; //wlasciwa czesc algorytmu.
+        for (int i = 0; i < 16; i++) {
+            for (int j = 0; j < 4; j++) { //Zapisujemy lewa czesc wiadomosci w zmiennej pomocniczej ipAux.
+                for (int k = 0; k < 8; k++) {
+                    ipAux = setBit(ipAux, j * 8 + k, isBitSet(ipLeft, j * 8 + k));
+                }
+            }
+
+            for (int j = 0; j < 4; j++) {// nastepnie nadpisujemy lewa prawa czescia(zgodnie z algorytmem L0 = R1).
+                for (int k = 0; k < 8; k++) {
+                ipLeft = setBit(ipLeft, j * 8 + k, isBitSet(ipRight, j * 8 + k));
+                }
+            }
+            byte[] aux2;
+            aux2 = XOR(ipAux, FeistelFunction(ipLeft, subKeys[i])); // Szykujemy sobie xora w zmiennej aux2 (L0 ^ funkcjaFeistla(R0, Klucz1))
+            for (int j = 0; j < 4; j++) {
+                for (int k = 0; k < 8; k++) { // Wykorzystujac, ze wartosc L0 zostala zapisana w ipAux, a to co bylo nam potrzebne z R0
+                    //zapisalismy w zmiennej aux2 nadpisujemy ipRight (R0 = L0 ^ funkcjaFeistla(R0, Klucz1))
+                    //cala petla(iteratowana przez i) wykona sie az do uzyskania L16 i R16 w sposob analogiczny jak wczesniej
+                    //Ln i Rn sa nam potrzebne tylko by uzyskac L16 i R16
+                    ipRight = setBit(ipRight, j * 8 + k, isBitSet(aux2, j * 8 + k));
+                }
+            }
+        }
+        for (int i = 0; i < 8; i++) { //Skladamy L16 i R16 w calosc, ale algorytm wymaga by ustawic je odwrotnie(R16L16)
+            for (int j = 0; j < 8; j++) {
+                if (i < 4) {
+                    ip = setBit(ip, i * 8 + j, isBitSet(ipRight, i * 8 + j));
+                } else {
+                    ip = setBit(ip, i * 8 + j, isBitSet(ipLeft, i * 8 + j - 32));
+                }
+            }
+        }
+        byte[] encrypted = new byte[8]; //dokonujemy permutacji koncowej
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                encrypted = setBit(encrypted, i * 8 + j, isBitSet(ip, endPermutation[i * 8 + j] - 1));
+            }
+        }
+        return encrypted;
+    }
+
+    public byte[] finalencryption (byte[] message) { //czesc ktora nam robi DESX z DES
+        int addition = 0;       //przewidujemy, ze wiadomosc moze nie miec idealnie 8 bajtow w zwiazku z czym wydluzamy wiadomosc
+        //bajtami zawerajacymi 0, by dlugosc byla podzielna przez 8
+        int length = message.length;
+        if (length % 8 != 0) {
+            addition = 8 - (length % 8);
+        }
+
+        int extendedlength = length + addition;
+        byte[] extendedmessage = new byte[extendedlength];
+        System.arraycopy(message, 0, extendedmessage, 0, length);
+        for (int i = length; i < extendedlength; i++) {
+            extendedmessage[i] = 0; //douzupełniamy zerami
+        }
+
+        byte[] aux = new byte[extendedlength];
+        byte[] temp = new byte[8];
+
+        for (int i = 0; i < extendedlength / 8; i++) {  //wlasciwe szyfrowanie
+            int startIndex = i * 8;
+            System.arraycopy(extendedmessage, startIndex, temp, 0, 8);
+
+            for (int j = 0; j < 8; j++) {   //xorujemy nasza wiadomosc z kluczem internal
+                temp[j] = (byte) (temp[j] ^ keyInternal[j]);
+            }
+
+            byte[] partialCipher = encryption(temp); //dokonujemy enkrypcji tak jak w zwyklym DESie podajac zxorowana wiadomosc
+
+            for (int j = 0; j < 8; j++) {   //po szyfrowaniu znowu dokonujemy xorowania szyfru ale przez klucz External
+                partialCipher[j] = (byte) (partialCipher[j] ^ keyExternal[j]);
+            }
+
+            System.arraycopy(partialCipher, 0, aux, startIndex, 8);
+        }
+        return aux; //zwracamy zaszyfrowana wiadomosc
+    }
+
+    public byte[] decryption(byte[] partialMessage) { //praktycznie to samo co encryption, ale kilka rzeczy jest na odwrot
+        byte [] ip = new byte[8];   //stosujemy na wiadomosci permutacje poczatkowa
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                ip = setBit(ip, i * 8 + j, isBitSet(partialMessage, initPermutation[i * 8 + j] - 1));
+            }
+        }
         byte [] ipLeft = new byte[4];
 
         for (int i = 0; i < 4; i++) {
@@ -324,22 +560,78 @@ public class DESX {
                 ipLeft = setBit(ipLeft, i * 8 + j, isBitSet(ip, i * 8 + j));
             }
         }
-        printBits(ipLeft);
+
         byte [] ipRight = new byte[4];
         for (int i = 4; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
                 ipRight = setBit(ipRight, i * 8 + j - 32, isBitSet(ip, i * 8 + j));
             }
         }
-        printBits(ipRight);
 
-        for (int i = 0; i < 16; i++) {
-            //to be continued, Feistel required
+        byte[] ipAux = new byte[4];
+        for (int i = 15; i >= 0; i--) { //w odroznieniu od encryption iterujemy od 15 do 0;
+            for (int j = 0; j < 4; j++) {
+                for (int k = 0; k < 8; k++) {
+                    ipAux = setBit(ipAux, j * 8 + k, isBitSet(ipLeft, j * 8 + k));
+                }
+            }
+
+            for (int j = 0; j < 4; j++) {
+                for (int k = 0; k < 8; k++) {
+                    ipLeft = setBit(ipLeft, j * 8 + k, isBitSet(ipRight, j * 8 + k));
+                }
+            }
+            byte[] aux2;
+            aux2 = XOR(ipAux, FeistelFunction(ipLeft, subKeys[i]));
+            for (int j = 0; j < 4; j++) {
+                for (int k = 0; k < 8; k++) {
+                    ipRight = setBit(ipRight, j * 8 + k, isBitSet(aux2, j * 8 + k));
+                }
+            }
         }
-
-        return ip;
+        for (int i = 0; i < 8; i++) { //Skladamy L0 i R0 w calosc, ale algorytm wymaga by ustawic je odwrotnie(R0L0)
+            for (int j = 0; j < 8; j++) {
+                if (i < 4) {
+                    ip = setBit(ip, i * 8 + j, isBitSet(ipRight, i * 8 + j));
+                } else {
+                    ip = setBit(ip, i * 8 + j, isBitSet(ipLeft, i * 8 + j - 32));
+                }
+            }
+        }
+        byte[] decrypted = new byte[8]; //dokonujemy permutacji koncowej
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                decrypted = setBit(decrypted, i * 8 + j, isBitSet(ip, endPermutation[i * 8 + j] - 1));
+            }
+        }
+        return decrypted;
     }
 
+    public byte[] finalDecryption(byte[] fullMessage) { //praktycznie to samo co finalencryption, ale na odwrot
+        //przy dekrypcji nie potrzebujemy dostosowywac do odpowiedniej dlugosci wiadomosci bo enkrypcja juz o nia zadbala
+        int length = fullMessage.length;
+
+        byte[] fullCipher = new byte[length];
+        byte[] temp = new byte[8];
+
+        for (int i = 0; i < length / 8; i++) {
+            int startIndex = i * 8;
+            System.arraycopy(fullMessage, startIndex, temp, 0, 8);
+
+            for (int j = 0; j < 8; j++) {  //xorujemy nasz szyfr tym razem z kluczem external
+                temp[j] = (byte) (temp[j] ^ keyExternal[j]);
+            }
+
+            byte[] partialCipher = decryption(temp); //dokonujemy dekrypcji tak jak w zwyklym DESie podajac zxorowany szyfr
+
+            for (int j = 0; j < 8; j++) {
+                partialCipher[j] = (byte) (partialCipher[j] ^ keyInternal[j]); //ponownie xorujemy nasz szyfr tym razem z kluczem internal
+            }
+
+            System.arraycopy(partialCipher, 0, fullCipher, startIndex, 8);
+        }
+        return fullCipher;
+    }
 
     //konwertuje tablicę bajtów na ciąg znaków w systemie heksadecymalnym
     public static String bytesToHex(byte bytes[])

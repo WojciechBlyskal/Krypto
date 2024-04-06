@@ -26,7 +26,7 @@ public class main {
         }*/
         //des.printBits(bytes);
         //des.printBits(des.circularLeftShift(bytes, 64));
-        /*byte[] initialText = new byte[8];
+        byte[] initialText = new byte[8];
         initialText[0] = 1;
         initialText[1] = 35;
         initialText[2] = 69;
@@ -35,7 +35,7 @@ public class main {
         initialText[5] = (byte) 171;
         initialText[6] = (byte) 205;
         initialText[7] = (byte) 239;
-        des.encoding(initialText);*/
+        des.encryption(initialText);
         byte[] feistelHalf = new byte[4];
         feistelHalf[0] = (byte) 240;
         feistelHalf[1] = (byte) 170;
@@ -51,7 +51,10 @@ public class main {
         key2[5] = 114;
         // 00011011 00000010 11101111 11111100 01110000 01110010
 
-        des.FeistelFunction(feistelHalf, key2);
+        //des.printBits(des.FeistelFunction(feistelHalf, key2));
         //des.printBits(des.XOR(key, bytes));
+
+        des.printBits(des.encryption(initialText));
+        //des.printBits(des.encrypting(initialText));
     }
 }
