@@ -37,9 +37,10 @@ public class DESX {
             31, 23, 15,  7, 62, 54, 46, 38,
             30, 22, 14,  6, 61, 53, 45, 37,
             29, 21, 13,  5, 28, 20, 12, 4};
-    private byte[] PC2 = {14, 17, 11, 24, 1, 5, 3, 28,
-            15, 6, 21, 10, 23, 19, 12, 4,
-            26, 8, 16, 7, 27, 20, 13, 2,
+    private byte[] PC2 = {
+            14, 17, 11, 24,  1,  5,  3, 28,
+            15,  6, 21, 10, 23, 19, 12,  4,
+            26,  8, 16,  7, 27, 20, 13,  2,
             41, 52, 31, 37, 47, 55, 30, 40,
             51, 45, 33, 48, 44, 49, 39, 56,
             34, 53, 46, 42, 50, 36, 29, 32};
@@ -91,7 +92,7 @@ public class DESX {
     private byte[] S7 = {
              4, 11,  2, 14, 15,  0,  8, 13,  3, 12,  9,  7,  5, 10,  6,  1,
             13,  0, 11,  7,  4,  9,  1, 10, 14,  3,  5, 12,  2, 15,  8,  6,
-            1,  4, 11, 13, 12,  3,  7, 14, 10, 15,  6,  8,  0,  5,  9,  2,
+             1,  4, 11, 13, 12,  3,  7, 14, 10, 15,  6,  8,  0,  5,  9,  2,
              6, 11, 13,  8,  1,  4, 10,  7,  9,  5,  0, 15, 14,  2,  3, 12
     };
     private byte[] S8 = {
@@ -101,8 +102,12 @@ public class DESX {
              2,  1, 14,  7,  4, 10,  8, 13, 15, 12,  9,  0,  3,  5,  6, 11
     };
 
-    private byte[] pBlock = {16, 7, 20, 21, 29, 12, 28, 17, 1, 15, 23, 26, 5, 18, 31, 10,
-            2, 8, 24, 14, 32, 27, 3, 9, 19, 13, 30, 6, 22, 11, 4, 25};
+    private byte[] pBlock = {
+            16,  7, 20, 21, 29, 12, 28, 17,
+             1, 15, 23, 26,  5, 18, 31, 10,
+             2,  8, 24, 14, 32, 27,  3,  9,
+            19, 13, 30, 6, 22, 11, 4, 25
+    };
 
     DESX() {
         subKeys = new byte[16][6];
@@ -309,7 +314,7 @@ public class DESX {
             }
         }
 
-        byte[] beforePermutation = new byte [4]; //zmiena beforePermutation zbierze nam wyniki przekszalcenia 6bitowych czesci wiadomosci sboxami spowrotem w calosc
+        byte[] beforePermutation = new byte [4]; //zmienna beforePermutation zbierze nam wyniki przekszalcenia 6bitowych czesci wiadomosci sboxami spowrotem w calosc
         for (int i = 0; i < 8; i ++) {  //Szyfrujemy wiadomosc stosujac SBoxy. Dzielimy wiadomosc na 6 bitowe czesci.
             int row = 0;
             int column = 0;
@@ -557,7 +562,7 @@ public class DESX {
         int newLen = length + supplement;
 
         byte[] suppliedMessage = new byte[newLen];
-        System.arraycopy(fullMessage, 0, suppliedMessage, 0, length); // Kopiujemy fullMessage tyle ile zawiera bytow reszta dopelniona pozniej
+        System.arraycopy(fullMessage, 0, suppliedMessage, 0, length); // Kopiujemy fullMessage tyle ile zawiera bitow reszta dopelniona pozniej
 
         for (int i = length; i < newLen; i++) {
             suppliedMessage[i] = 0; //douzupełniamy zerami
