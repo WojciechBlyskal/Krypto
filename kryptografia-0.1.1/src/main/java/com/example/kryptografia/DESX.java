@@ -7,33 +7,6 @@ import java.security.NoSuchAlgorithmException;
 
 public class DESX {
 
-    byte[][] subKeys;
-
-    DESX() {
-        subKeys = new byte[16][6];
-    }
-
-    private byte[] PC1 = {
-        57, 49, 41, 33, 25, 17,  9,  1,
-        58, 50, 42, 34, 26, 18, 10,  2,
-        59, 51, 43, 35, 27, 19, 11,  3,
-        60, 52, 44, 36, 63, 55, 47, 39,
-        31, 23, 15,  7, 62, 54, 46, 38,
-         0, 22, 14,  6, 61, 53, 45, 37,
-        29, 21, 13,  5, 28, 20, 12,  4
-    };
-
-    private byte[] LeftShifts = {1, 1, 2, 2, 2, 2, 2, 2, 1, 2, 2, 2, 2, 2, 2, 1};
-
-    private byte[] PC2 = {
-            14, 17, 11, 24,  1,  5,  3, 28,
-            15,  6, 21, 10, 23, 19, 12,  4,
-            26,  8, 16,  7, 27, 20, 13,  2,
-            41, 52, 31, 37, 47, 55, 30, 40,
-            51, 45, 33, 48, 44, 49, 39, 56,
-            34, 53, 46, 42, 50, 36, 29, 32
-    };
-
     private byte[] initPermutation = {
             58,	50,	42,	34,	26,	18,	10,	2,
             60,	52,	44,	36,	28,	20,	12,	4,
@@ -45,13 +18,38 @@ public class DESX {
             63,	55,	47,	39,	31,	23,	15,	7
     };
 
-    private byte[] EBitSelectionTable = {
-            32,  1,  2,  3,  4,  5,  4,  5,
-             6,  7,  8,  9,  8,  9, 10, 11,
-            12, 13, 12, 13, 14, 15, 16, 17,
-            16, 17, 18, 19, 20, 21, 20, 21,
-            22, 23, 24, 25, 24, 25, 26, 27,
-            28, 29, 28, 29, 30, 31, 32,  1
+    private byte[] endPermutation = {
+            40,     8,   48,    16,    56,   24,    64,   32,
+            39,     7,   47,    15,    55,   23,    63,   31,
+            38,     6,   46,    14,    54,   22,    62,   30,
+            37,     5,   45,    13,    53,   21,    61,   29,
+            36,     4,   44,    12,    52,   20,    60,   28,
+            35,     3,   43,    11,    51,   19,    59,   27,
+            34,     2,   42,    10,    50,   18,    58,   26,
+            33,     1,   41,     9,    49,   17,    57,   25
+    };
+
+    private byte[] PC1 = {
+            57, 49, 41, 33, 25, 17,  9,  1,
+            58, 50, 42, 34, 26, 18, 10,  2,
+            59, 51, 43, 35, 27, 19, 11,  3,
+            60, 52, 44, 36, 63, 55, 47, 39,
+            31, 23, 15,  7, 62, 54, 46, 38,
+            30, 22, 14,  6, 61, 53, 45, 37,
+            29, 21, 13,  5, 28, 20, 12, 4};
+    private byte[] PC2 = {14, 17, 11, 24, 1, 5, 3, 28,
+            15, 6, 21, 10, 23, 19, 12, 4,
+            26, 8, 16, 7, 27, 20, 13, 2,
+            41, 52, 31, 37, 47, 55, 30, 40,
+            51, 45, 33, 48, 44, 49, 39, 56,
+            34, 53, 46, 42, 50, 36, 29, 32};
+    private byte[] SHIFTS = {1, 1, 2, 2, 2, 2, 2, 2, 1, 2, 2, 2, 2, 2, 2, 1};
+
+    private  byte[] extendedPermutation = {
+            32,	 1,	 2,	 3,	 4,  5,  4,	 5,	 6,  7,  8,  9,
+             8,	 9,	10,	11,	12,	13,	12,	13,	14,	15,	16,	17,
+            16,	17,	18,	19,	20,	21, 20,	21,	22, 23,	24,	25,
+            24,	25,	26,	27,	28, 29,	28,	29,	30,	31,	32,	 1
     };
 
     private byte[] S1 = {
@@ -93,7 +91,7 @@ public class DESX {
     private byte[] S7 = {
              4, 11,  2, 14, 15,  0,  8, 13,  3, 12,  9,  7,  5, 10,  6,  1,
             13,  0, 11,  7,  4,  9,  1, 10, 14,  3,  5, 12,  2, 15,  8,  6,
-             1,  4, 11, 13, 12,  3,  7, 14, 10, 15,  6,  8,  0,  5,  9,  2,
+            1,  4, 11, 13, 12,  3,  7, 14, 10, 15,  6,  8,  0,  5,  9,  2,
              6, 11, 13,  8,  1,  4, 10,  7,  9,  5,  0, 15, 14,  2,  3, 12
     };
     private byte[] S8 = {
@@ -102,53 +100,106 @@ public class DESX {
              7, 11,  4,  1,  9, 12, 14,  2,  0,  6, 10, 13, 15,  3,  5,  8,
              2,  1, 14,  7,  4, 10,  8, 13, 15, 12,  9,  0,  3,  5,  6, 11
     };
-    private byte[] permutationP = {
-            16,  7, 20, 21, 29, 12, 28, 17,
-             1, 15, 23, 26,  5, 18, 31, 10,
-             2,  8, 24, 14, 32, 27,  3,  9,
-            19, 13, 30,  6, 22, 11,  4, 25
-    };
 
-    private byte[] endPermutation = {
-            40,  8, 48, 16, 56, 24, 64, 32,
-            39,  7, 47, 15, 55, 23, 63, 31,
-            38,  6, 46, 14, 54, 22, 62, 30,
-            37,  5, 45, 13, 53, 21, 61, 29,
-            36,  4, 44,  2, 52, 20, 60, 28,
-            35,  3, 43, 11, 51, 19, 59, 27,
-            34,  2, 42, 10, 50, 18, 58, 26,
-            33,  1, 41,  9, 49, 17, 57, 25
-    };
+    private byte[] pBlock = {16, 7, 20, 21, 29, 12, 28, 17, 1, 15, 23, 26, 5, 18, 31, 10,
+            2, 8, 24, 14, 32, 27, 3, 9, 19, 13, 30, 6, 22, 11, 4, 25};
 
-    private byte[] keyInternal;
-
-    private byte[] keyExternal;
-
-    private byte[] keyDes;
-
-    public void setKeyInternal(byte[] keyInt) {
-        this.keyInternal = keyInt;
+    DESX() {
+        subKeys = new byte[16][6];
     }
 
-    public void setKeyExternal(byte[] keyExt) {
-        this.keyExternal = keyExt;
+
+    public byte[] generateKey() {
+        try {
+            KeyGenerator keyGen = KeyGenerator.getInstance("DES");
+            SecretKey secretKey = keyGen.generateKey();
+            return secretKey.getEncoded();
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
+    public void setKeyInt(byte[] keyInt) {
+        this.keyInt = keyInt;
+    }
+
+    public void setKeyExt(byte[] keyExt) {
+        this.keyExt = keyExt;
     }
 
     public void setKeyDes(byte[] keyDes) {
         this.keyDes = keyDes;
-        generate16Keys(keyDes);
+        keys(keyDes);
     }
 
-    public byte[] getKeyInternal() {
-        return keyInternal;
+    private byte[] keyInt;
+
+    private byte[] keyExt;
+
+    private byte[] keyDes;
+
+    public byte[] getKeyInt() {
+        return keyInt;
     }
 
-    public byte[] getKeyExternal() {
-        return keyExternal;
+    public byte[] getKeyExt() {
+        return keyExt;
     }
 
     public byte[] getKeyDes() {
         return keyDes;
+    }
+
+    byte[][] subKeys;
+
+    public void keys (byte[] key64) { //przerobic 64bitowy klucz na klucz 56bitowy, podzielic go na 2 klucze 28bitowe, tymi
+        //dwoma kluczami wygenerowac zestaw 16 kluczy 56bitowych a ten zestaw przerobic na 16 kluczy 48bitowych
+        byte[] key56 = new byte[7];
+
+        for (int i = 0; i < 7; i++) { //generowanie klucza 56 bitowego. Iterujac ustawiamy kolejne bity klucza 56bitowego z odpowiednich bitow
+            // klucza 64bitowego. Kolejnosc bitow(wraz z wyborem bitow do odrzucenia) mamy zdefiniowana w tablicy PC1. Tablica PC1 jest z gory
+            // ustalona dla algorytmu, ale trzeba od nr bitu wskazanego przez nia odjac 1, gdyz nr bitow w tablicy sa numerowane od 1 do 64, a
+            // tablice sa ponumerowane od 0 do 63.
+            for (int j = 0; j < 8; j++) {
+                key56 = setBit(key56, i * 8 + j, isBitSet(key64, PC1[i * 8 + j] - 1));
+            }
+        }
+
+        byte[] key28Left = new byte[4];
+        //tworzymy 2 klucze 28bitowe. Ze wzgledu, ze 28%4!= 0 to musielismy upakowac bity do tablic de facto 32bitowych
+        for (int i = 0; i < 4; i ++) {
+            for (int j = 0; j < 8; j ++) {
+                if (i * 8 + j < 28) {
+                    key28Left = setBit(key28Left, i * 8 + j, isBitSet(key56, i * 8 + j));
+                }
+            }
+        }
+
+        byte[] key28Right = new byte[4];
+
+        for (int i = 3; i < 7; i++) {
+            for (int j = 0; j < 8; j++) {
+                if (i * 8 + j >= 28) {
+                    key28Right = setBit(key28Right, i * 8 + j - 28, isBitSet(key56, i * 8 + j));
+                }
+            }
+        }
+        //generowanie kluczy 48 bitowych
+        for (int i = 0; i < 16; i++) { //1 iteracja - 1 klucz 48 bitowy
+            for (int j = 0; j < SHIFTS[i]; j++) { //LeftShifts przechowuje ilosc przesuniec bitowych wymaganych przez algorytm
+                key28Left = circularLeftShift(key28Left, 28);
+                key28Right = circularLeftShift(key28Right, 28);
+            }
+            for (int j = 0; j < 28; j++) { //zlaczenie polowek w danej iteracji
+                key56 = setBit(key56, j, isBitSet(key28Left, j));
+                key56 = setBit(key56, j + 28, isBitSet(key28Right, j));
+            }
+            for (int j = 0; j < 48; j++) { //przerobienie klucza 56bitowego na klucz 48bitowy analogicznie jak wczesniej sie zmienialo
+                //klucz 64bitowy na 56bitowy, ale tu musimy wykorzystac tablice PC2, zamiast PC1
+                subKeys[i]= setBit(subKeys[i], j, isBitSet(key56, PC2[j] - 1));
+            }
+        }
     }
 
     public boolean isBitSet (byte[] bytes, int position) {  //sprawdza czy bit na danej pozycji wynosi 0 czy 1
@@ -186,6 +237,16 @@ public class DESX {
         }
     }
 
+    private void printNum(int len) {
+        for (int i = 0; i < len; i++) {
+            System.out.print(i+" ");
+            if (i < 10) {
+                System.out.print(" ");
+            }
+        }
+        System.out.println();
+    }
+
     public void printBits(byte[] data) { //przyjmuje dowolna dlugosc bytow, przygotowane bylo pod wyswietlanie 8 bytow
         int len = data.length;
         printNum(8 * len);
@@ -194,16 +255,6 @@ public class DESX {
                 System.out.print("1  ");
             } else {
                 System.out.print("0  ");
-            }
-        }
-        System.out.println();
-    }
-
-    private void printNum(int len) {
-        for (int i = 0; i < len; i++) {
-            System.out.print(i+" ");
-            if (i < 10) {
-                System.out.print(" ");
             }
         }
         System.out.println();
@@ -224,81 +275,6 @@ public class DESX {
             }
         }
         return shifted;
-    }
-
-    public byte[] inititalPermutation(byte[] _8Bytes) {
-        byte[] local = new byte[8];
-        for (int i = 0; i < 64; i++) {
-            local = setBit(local, i, isBitSet(_8Bytes, PC1[i] - 1));
-        }
-        return local;
-    }
-
-    public byte[] endingPermutation(byte[] _8Bytes) {
-        byte[] local = new byte[8];
-        for (int i = 0; i < 64; i++) {
-            local = setBit(local, i, isBitSet(_8Bytes, PC2[i] - 1));
-        }
-        return local;
-    }
-
-    public byte[] generateKey() {   //tworzymy klucz dzieki bibliotece
-        try {
-            KeyGenerator keyGen = KeyGenerator.getInstance("DES");
-            SecretKey secretKey = keyGen.generateKey();
-            return secretKey.getEncoded();
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public void generate16Keys (byte[] key64) { //przerobic 64bitowy klucz na klucz 56bitowy, podzielic go na 2 klucze 28bitowe, tymi
-        //dwoma kluczami wygenerowac zestaw 16 kluczy 56bitowych a ten zestaw przerobic na 16 kluczy 48bitowych
-        byte[] key56 = new byte[7];
-
-        for (int i = 0; i < 7; i++) { //generowanie klucza 56 bitowego. Iterujac ustawiamy kolejne bity klucza 56bitowego z odpowiednich bitow
-            // klucza 64bitowego. Kolejnosc bitow(wraz z wyborem bitow do odrzucenia) mamy zdefiniowana w tablicy PC1. Tablica PC1 jest z gory
-            // ustalona dla algorytmu, ale trzeba od nr bitu wskazanego przez nia odjac 1, gdyz nr bitow w tablicy sa numerowane od 1 do 64, a
-            // tablice sa ponumerowane od 0 do 63.
-            for (int j = 0; j < 8; j++) {
-                key56 = setBit(key56, i * 8 + j, isBitSet(key64, PC1[i * 8 + j] - 1));
-            }
-        }
-
-        byte[] key28Left = new byte[4];
-        //tworzymy 2 klucze 28bitowe. Ze wzgledu, ze 28%4!= 0 to musielismy upakowac bity do tablic de facto 32bitowych
-        for (int i = 0; i < 4; i ++) {
-            for (int j = 0; j < 8; j ++) {
-                if (i * 8 + j < 28) {
-                    key28Left = setBit(key28Left, i * 8 + j, isBitSet(key56, i * 8 + j));
-                }
-            }
-        }
-
-        byte[] key28Right = new byte[4];
-
-        for (int i = 3; i < 7; i++) {
-            for (int j = 0; j < 8; j++) {
-                if (i * 8 + j >= 28) {
-                    key28Right = setBit(key28Right, i * 8 + j - 28, isBitSet(key56, i * 8 + j));
-                }
-            }
-        }
-        //generowanie kluczy 48 bitowych
-        for (int i = 0; i < 16; i++) { //1 iteracja - 1 klucz 48 bitowy
-            for (int j = 0; j < LeftShifts[i]; j++) { //LeftShifts przechowuje ilosc przesuniec bitowych wymaganych przez algorytm
-                key28Left = circularLeftShift(key28Left, 28);
-                key28Right = circularLeftShift(key28Right, 28);
-            }
-            for (int j = 0; j < 28; j++) { //zlaczenie polowek w danej iteracji
-                key56 = setBit(key56, j, isBitSet(key28Left, j));
-                key56 = setBit(key56, j + 28, isBitSet(key28Right, j));
-            }
-            for (int j = 0; j < 48; j++) { //przerobienie klucza 56bitowego na klucz 48bitowy analogicznie jak wczesniej sie zmienialo
-                //klucz 64bitowy na 56bitowy, ale tu musimy wykorzystac tablice PC2, zamiast PC1
-                subKeys[i]= setBit(subKeys[i], j, isBitSet(key56, PC2[j] - 1));
-            }
-        }
     }
 
     public byte[] XOR (byte[] bytes1, byte[] bytes2) {
@@ -323,7 +299,7 @@ public class DESX {
         for (int i = 0; i < 6; i ++) {  //przepisujemy bity z wiadomosci zgodnie z kolejnoscia w EBitSelectionTable(bo wymaga tego algorytm)
             // rozszerzajac ja do 48bitow, by pasowala wielkoscia do klucza.
             for (int j = 0; j < 8; j++) {
-                feistel = setBit(feistel, i * 8 + j, isBitSet(message32, EBitSelectionTable[i * 8 + j] - 1));
+                feistel = setBit(feistel, i * 8 + j, isBitSet(message32, extendedPermutation[i * 8 + j] - 1));
             }
         }
         byte[] xored = XOR(feistel, key);
@@ -438,13 +414,13 @@ public class DESX {
         byte[] output = new byte[4];
         for (int i = 0; i < 4; i ++) {  // Dokonujemy permutacji P.
             for (int j = 0; j < 8; j++) {
-                output = setBit(output, i * 8 + j, isBitSet(beforePermutation, permutationP[i * 8 + j] - 1));
+                output = setBit(output, i * 8 + j, isBitSet(beforePermutation, pBlock[i * 8 + j] - 1));
             }
         }
         return output;
     }
 
-    public byte[] encryption(byte[] partialMessage) { //zakodowanie wiadomosci poczatkowej
+    public byte[] encrypting(byte[] partialMessage) { //zakodowanie wiadomosci poczatkowej
         byte [] ip = new byte[8];   //stosujemy na wiadomosci permutacje poczatkowa
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
@@ -477,7 +453,7 @@ public class DESX {
 
             for (int j = 0; j < 4; j++) {// nastepnie nadpisujemy lewa prawa czescia(zgodnie z algorytmem L0 = R1).
                 for (int k = 0; k < 8; k++) {
-                ipLeft = setBit(ipLeft, j * 8 + k, isBitSet(ipRight, j * 8 + k));
+                    ipLeft = setBit(ipLeft, j * 8 + k, isBitSet(ipRight, j * 8 + k));
                 }
             }
             byte[] aux2;
@@ -509,44 +485,7 @@ public class DESX {
         return encrypted;
     }
 
-    public byte[] finalencryption (byte[] message) { //czesc ktora nam robi DESX z DES
-        int addition = 0;       //przewidujemy, ze wiadomosc moze nie miec idealnie 8 bajtow w zwiazku z czym wydluzamy wiadomosc
-        //bajtami zawerajacymi 0, by dlugosc byla podzielna przez 8
-        int length = message.length;
-        if (length % 8 != 0) {
-            addition = 8 - (length % 8);
-        }
-
-        int extendedlength = length + addition;
-        byte[] extendedmessage = new byte[extendedlength];
-        System.arraycopy(message, 0, extendedmessage, 0, length);
-        for (int i = length; i < extendedlength; i++) {
-            extendedmessage[i] = 0; //douzupełniamy zerami
-        }
-
-        byte[] aux = new byte[extendedlength];
-        byte[] temp = new byte[8];
-
-        for (int i = 0; i < extendedlength / 8; i++) {  //wlasciwe szyfrowanie
-            int startIndex = i * 8;
-            System.arraycopy(extendedmessage, startIndex, temp, 0, 8);
-
-            for (int j = 0; j < 8; j++) {   //xorujemy nasza wiadomosc z kluczem internal
-                temp[j] = (byte) (temp[j] ^ keyInternal[j]);
-            }
-
-            byte[] partialCipher = encryption(temp); //dokonujemy enkrypcji tak jak w zwyklym DESie podajac zxorowana wiadomosc
-
-            for (int j = 0; j < 8; j++) {   //po szyfrowaniu znowu dokonujemy xorowania szyfru ale przez klucz External
-                partialCipher[j] = (byte) (partialCipher[j] ^ keyExternal[j]);
-            }
-
-            System.arraycopy(partialCipher, 0, aux, startIndex, 8);
-        }
-        return aux; //zwracamy zaszyfrowana wiadomosc
-    }
-
-    public byte[] decryption(byte[] partialMessage) { //praktycznie to samo co encryption, ale kilka rzeczy jest na odwrot
+    public byte[] decrypting(byte[] partialMessage) { //praktycznie to samo co encryption, ale kilka rzeczy jest na odwrot
         byte [] ip = new byte[8];   //stosujemy na wiadomosci permutacje poczatkowa
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
@@ -607,8 +546,48 @@ public class DESX {
         return decrypted;
     }
 
-    public byte[] finalDecryption(byte[] fullMessage) { //praktycznie to samo co finalencryption, ale na odwrot
-        //przy dekrypcji nie potrzebujemy dostosowywac do odpowiedniej dlugosci wiadomosci bo enkrypcja juz o nia zadbala
+    public byte[] finalEncryption(byte[] fullMessage) {
+        int length = fullMessage.length;
+        int supplement = 0;
+
+        if (length % 8 != 0) {
+            supplement = 8 - (length % 8);
+        }
+
+        int newLen = length + supplement;
+
+        byte[] suppliedMessage = new byte[newLen];
+        System.arraycopy(fullMessage, 0, suppliedMessage, 0, length); // Kopiujemy fullMessage tyle ile zawiera bytow reszta dopelniona pozniej
+
+        for (int i = length; i < newLen; i++) {
+            suppliedMessage[i] = 0; //douzupełniamy zerami
+        }
+
+        byte[] fullCipher = new byte[newLen];
+        byte[] temp = new byte[8];
+
+        for (int i = 0; i < newLen / 8; i++) {
+            int startIndex = i * 8;
+            System.arraycopy(suppliedMessage, startIndex, temp, 0, 8);
+
+            for (int j = 0; j < 8; j++) {
+                temp[j] = (byte) (temp[j] ^ keyInt[j]);
+            }
+
+            byte[] partialCipher = encrypting(temp);
+
+            for (int j = 0; j < 8; j++) {
+                partialCipher[j] = (byte) (partialCipher[j] ^ keyExt[j]);
+            }
+
+            System.arraycopy(partialCipher, 0, fullCipher, startIndex, 8);
+        }
+
+        return fullCipher;
+    }
+
+
+    public byte[] finalDecryption(byte[] fullMessage) { //fullMessage jest odpowiedniego rozmiaru
         int length = fullMessage.length;
 
         byte[] fullCipher = new byte[length];
@@ -618,14 +597,14 @@ public class DESX {
             int startIndex = i * 8;
             System.arraycopy(fullMessage, startIndex, temp, 0, 8);
 
-            for (int j = 0; j < 8; j++) {  //xorujemy nasz szyfr tym razem z kluczem external
-                temp[j] = (byte) (temp[j] ^ keyExternal[j]);
+            for (int j = 0; j < 8; j++) {
+                temp[j] = (byte) (temp[j] ^ keyExt[j]);
             }
 
-            byte[] partialCipher = decryption(temp); //dokonujemy dekrypcji tak jak w zwyklym DESie podajac zxorowany szyfr
+            byte[] partialCipher = decrypting(temp);
 
             for (int j = 0; j < 8; j++) {
-                partialCipher[j] = (byte) (partialCipher[j] ^ keyInternal[j]); //ponownie xorujemy nasz szyfr tym razem z kluczem internal
+                partialCipher[j] = (byte) (partialCipher[j] ^ keyInt[j]);
             }
 
             System.arraycopy(partialCipher, 0, fullCipher, startIndex, 8);
@@ -633,7 +612,6 @@ public class DESX {
         return fullCipher;
     }
 
-    //konwertuje tablicę bajtów na ciąg znaków w systemie heksadecymalnym
     public static String bytesToHex(byte bytes[])
     {
         byte rawData[] = bytes;
@@ -666,8 +644,7 @@ public class DESX {
             for (int i = 0; i < dl; i++)
             { try{
                 wynik[i] = (byte) Integer.parseInt(tekst.substring(i * 2, i * 2 + 2), 16);
-            }catch(NumberFormatException e){
-                JOptionPane.showMessageDialog(null, "Problem z przekonwertowaniem HEX->BYTE.\n Sprawdź wprowadzone dane.", "Problem z przekonwertowaniem HEX->BYTE", JOptionPane.ERROR_MESSAGE); }
+            }catch(NumberFormatException e){JOptionPane.showMessageDialog(null, "Problem z przekonwertowaniem HEX->BYTE.\n Sprawdź wprowadzone dane.", "Problem z przekonwertowaniem HEX->BYTE", JOptionPane.ERROR_MESSAGE); }
             }
             return wynik;
         }

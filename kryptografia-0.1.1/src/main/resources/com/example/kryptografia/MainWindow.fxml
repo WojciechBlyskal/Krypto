@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
+
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="668.0" prefWidth="920.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.kryptografia.MainWindowController">
+   <children>
+      <Button fx:id="encryptFromInputButtonID" layoutX="60.0" layoutY="60.0" mnemonicParsing="false" onAction="#onEncryptFromInputButtonClick" text="Zaszyfruj wpisany tekst" />
+      <Button fx:id="decryptFromInputButtonID" layoutX="60.0" layoutY="350.0" mnemonicParsing="false" onAction="#onDecryptFromInputButtonClick" text="Odszyfruj wpisany tekst" />
+      <Button fx:id="encryptFromFileButtonID" layoutX="60.0" layoutY="100.0" mnemonicParsing="false" onAction="#onEncryptFromFileButtonClick" text="Zaszyfruj wiadomość z pliku tekstowego" />
+      <Button fx:id="saveDecryptedToFileButtonID" layoutX="60.0" layoutY="140.0" mnemonicParsing="false" onAction="#onSaveDecryptedToFileButtonClick" text="Zapisz odszyfrowaną wiadomość do pliku" />
+      <Button fx:id="decryptFromFileButtonID" layoutX="60.0" layoutY="390.0" mnemonicParsing="false" onAction="#onDecryptFromFileButtonClick" text="Odszyfruj wiadomość z pliku tekstowego" />
+      <Button fx:id="saveEncryptedToFileButtonID" layoutX="60.0" layoutY="430.0" mnemonicParsing="false" onAction="#onSaveEncryptedToFileButtonClick" text="Zapisz zaszyfrowaną wiadomość do pliku" />
+      <!--<Label fx:id="welcomingLabelID" alignment="CENTER" contentDisplay="CENTER" layoutX="224.0" layoutY="20.0" prefHeight="25.0" prefWidth="337.0" text="Szyfrowanie DESX" textAlignment="CENTER" textOverrun="CENTER_ELLIPSIS">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Label>-->
+      <TextArea fx:id="plainTextTextAreaID" layoutX="550.0" layoutY="40.0" prefHeight="300.0" prefWidth="300.0" promptText="Wpisz wiadomość do zaszyfrowania." wrapText="true" />
+      <TextArea fx:id="cipherTextTextAreaID" layoutX="550.0" layoutY="350.0" prefHeight="300.0" prefWidth="300.0" promptText="Wpisz zaszyfrowaną wiadomość." wrapText="true" />
+      <!--<Label fx:id="keyIntLabelID" layoutX="65.0" layoutY="463.0" text="Internal key" />
+      <Label fx:id="keyDesLabelID" layoutX="65.0" layoutY="537.0" text="DES key" />
+      <Label fx:id="keyExtLabelID" layoutX="65.0" layoutY="601.0" text="External key" />-->
+      <TextField fx:id="keyIntTextFieldID" layoutX="60.0" layoutY="180.0" promptText="Miejsce na internal key" />
+      <TextField fx:id="keyDesTextFieldID" layoutX="220.0" layoutY="180.0" promptText="Miejsce na DES key" />
+      <TextField fx:id="keyExtTextFieldID" layoutX="380.0" layoutY="180.0" promptText="Miejsce na external key" />
+      <Button fx:id="keyIntButtonID" layoutX="60.0" layoutY="220.0" mnemonicParsing="false" onAction="#onKeyIntButtonClick" text="Generuj internal key" />
+      <Button fx:id="keyDesButtonID" layoutX="220.0" layoutY="220.0" mnemonicParsing="false" onAction="#onKeyDesButtonClick" text="Generuj DES key" />
+      <Button fx:id="keyExtButtonID" layoutX="380.0" layoutY="220.0" mnemonicParsing="false" onAction="#onKeyExtButtonClick" text="Generuj external key" />
+      <Button fx:id="keyConfirmationButtonID" layoutX="60.0" layoutY="280.0" mnemonicParsing="false" onAction="#onKeyConfirmationButtonClick" text="Zatwierdź klucze" />
+      <Button fx:id="readKeysFromFileButtonID" layoutX="380.0" layoutY="280.0" mnemonicParsing="false" onAction="#onReadKeysFromFileButton" text="Wczytaj klucze z pliku" />
+      <Button fx:id="saveKeysToFileButtonID" layoutX="220.0" layoutY="280.0" mnemonicParsing="false" onAction="#onSaveKeysToFileButton" text="Zapisz klucze do pliku" />
+      <!--<Label fx:id="desKeyInfoLabelID" layoutX="30.0" layoutY="565.0" text="Aktualny DES key:" />
+      <Label fx:id="intKeyInfoLabelID" layoutX="30.0" layoutY="491.0" text="Aktualny internal key:" />
+      <Label fx:id="extKeyInfoLabelID" layoutX="30.0" layoutY="629.0" text="Aktualny external key:" />-->
+      <Label fx:id="actualIntKeyLabelID" layoutX="68.0" layoutY="184.0" />
+      <Label fx:id="actualDesKeyLabelID" layoutX="228.0" layoutY="184.0" />
+      <Label fx:id="actualExtKeyLabelID" layoutX="388.0" layoutY="184.0" />
+   </children>
+</Pane>
