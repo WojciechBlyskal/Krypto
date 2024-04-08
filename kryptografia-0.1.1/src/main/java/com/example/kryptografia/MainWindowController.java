@@ -1,3 +1,4 @@
+//Autorzy: Wojciech Blyskal 247632, Hanna Tovstokora 245114
 package com.example.kryptografia;
 
 import javafx.fxml.FXML;
